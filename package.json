@@ -1,0 +1,30 @@
+{
+  "name": "gdsc-server",
+  "version": "1.0.0",
+  "description": "GDSC API using restify and mongoose",
+  "main": "app.js",
+  "dependencies": {
+    "mongoose": "^4.1.8",
+    "restify": "^4.0.3",
+    "restify-jwt": "^0.2.0",
+    "jsonwebtoken": "^5.0.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nwpuhmz/gdsc-server.git"
+  },
+  "keywords": [
+    "api",
+    "restify"
+  ],
+  "author": "nwpuhmz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nwpuhmz/gdsc-server/issues"
+  },
+  "homepage": "https://github.com/nwpuhmz/gdsc-server"
+}
