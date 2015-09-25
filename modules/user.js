@@ -7,10 +7,13 @@ var jwt = require('jsonwebtoken');
 
     Schema = mongoose.Schema;
 var UserSchema = new Schema({
-    account:{type:String ,required:true},
+    account:{type:String ,index: true},
     password:{type:String ,required:true},
-    avatar :{type:String ,default:''},
-    nickName:{type:String ,default:'小瓜子'}
+    avatar :{type:String ,default:'http://img5.imgtn.bdimg.com/it/u=2946580806,2024059485&fm=11&gp=0.jpg'},
+    nickName:{type:String ,default:'小瓜子'},
+    create_at: { type: Date, default: Date.now },
+    update_at: { type: Date, default: Date.now },
+    is_block: {type: Boolean, default: false}
 });
 
 var User = mongoose.model('User',UserSchema);
@@ -78,7 +81,7 @@ module.exports = {
             if(user){
                 res.send(new restify.InvalidArgumentError('user already exist!'));
             } else {
-                new_user.save(function(err, new_user){
+                user.save(function(err, new_user){
                     if (err) res.send(new restify.InvalidArgumentError(JSON.stringify(err.errors)));
 
                     res.send(new_user);
@@ -100,9 +103,9 @@ module.exports = {
 
         User.update({ _id: req.params.id },new_user, {
             multi: false
-        }, function (error, user) {
-            if (error) res.send(new restify.InvalidArgumentError(JSON.stringify(error.errors)))
-            res.send()
+        }, function (error, new_user) {
+            if (error) return res.send(new restify.InvalidArgumentError(JSON.stringify(error.errors)))
+            res.send();
         });
 
     },
@@ -111,7 +114,7 @@ module.exports = {
     del : function(req,res,restify){
         User.remove({ _id: req.params.id }, function (error, user) {
             if (error) return res.send(new restify.InvalidArgumentError(JSON.stringify(error.errors)))
-            res.send()
+            res.send();
     })}
 
 };

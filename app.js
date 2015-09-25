@@ -19,22 +19,24 @@ server
     // Allow the use of POST
     .use(restify.fullResponse())
     // Maps req.body to req.params
-    .use(restify.bodyParser());
+    .use(restify.bodyParser())
+
+    .use(restify.queryParser());
 
 // CORS
 server.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', "*");
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type','x-access-token');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
 
 });
 
 //Json web token filter
-server.use(jwtRestify({ secret: config.secret}).unless({path:[
-    '/user',
-    '/user/authenticate'
-]}));
+//server.use(jwtRestify({ secret: config.secret}).unless({path:[
+//    '/user',
+//    '/user/authenticate'
+//]}));
 
 /*===================== DataBase ======================= */
 
@@ -49,8 +51,10 @@ db.once('open', function (callback) {
 /* ===================== Application ======================= */
 
 var user = require('./modules/user.js');
+var product = require('./modules/product.js');
 
 
+/*======================user=========================*/
 //Authenticate a user
 server.post('/user/authenticate',function(req,res){
     user.authenticate(req,res,restify);
@@ -71,7 +75,7 @@ server.get('/user/:account',function(req,res,next){
 
 //Create new user
 server.post('/user',function(req,res,next){
-    if(req.params.account === undefined||req.params.password === undefined){
+    if(req.params.account.trim() === undefined||req.params.password.trim() === undefined){
         return next(new restify.InvalidArgumentError('Account or Password must be supplied'))
     }
     user.add(req,res,restify);
@@ -89,4 +93,25 @@ server.put('/user/:id',function(req,res,next){
 server.del('/user/:id',function(req,res,next){
 
     user.del(req,res,restify);
+});
+
+
+/*======================product=========================*/
+
+//Create new product
+server.post('/product',function(req,res,next){
+    if(req.params.title === undefined)
+        return next(new restify.InvalidArgumentError('Product title must be supplied'));
+    product.add(req,res,restify);
+});
+
+//Get all products
+server.get('/product',function(req,res,next){
+
+    product.list(req,res);
+});
+
+//Get product by id
+server.get('/product/:id',function(req,res,next){
+    product.listOne(req,res,restify);
 });
