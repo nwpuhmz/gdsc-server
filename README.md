@@ -1,4 +1,4 @@
 # gdsc-server
-NodeJs+Restify+Mongoose
+NodeJS+Restify+Mongoose
 ## TO-DO
 mocha test
