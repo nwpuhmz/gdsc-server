@@ -5,14 +5,16 @@ var mongoose = require('mongoose');
 
 Schema = mongoose.Schema;
 
+var ObjectId = Schema.ObjectId;
 var ProductSchema = new Schema({
     title:{type: String},
     category:{type:Number},
     content:{type: String},
     current_price:{type:Number,default: 0},
     old_price:{type:Number,default: 0},
-    product_img_url:{type:String,default :'http://img3.imgtn.bdimg.com/it/u=3280521816,3207985159&fm=21&gp=0.jpg'},
-    author_id:{type: Schema.Types.ObjectId},
+    //product_img_url:{type:Array,default:[]},
+    product_img_url:{type:String},
+    author_id:{type: ObjectId},
     star_count:{type: Number,default: 0}, //关注数
     reply_count:{type: Number,default: 0},//回复数
     create_at:{type: Date,default: Date.now},
@@ -44,7 +46,7 @@ module.exports = {
 
     //listing all products
     list : function(req,res){
-        Product.find(function(err,products){
+        Product.find({},{},{limit:req.query.per_page,skip:req.query.page*req.query.per_page,sort:{update_at:-1}},function(err,products){
             res.send(products);
         });
     },

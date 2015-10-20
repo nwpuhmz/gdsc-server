@@ -9,7 +9,7 @@ var jwt = require('jsonwebtoken');
 var UserSchema = new Schema({
     account:{type:String ,index: true},
     password:{type:String ,required:true},
-    avatar :{type:String ,default:'http://img5.imgtn.bdimg.com/it/u=2946580806,2024059485&fm=11&gp=0.jpg'},
+    avatar :{type:String },
     nickName:{type:String ,default:'小瓜子'},
     create_at: { type: Date, default: Date.now },
     update_at: { type: Date, default: Date.now },
@@ -79,9 +79,9 @@ module.exports = {
                 res.send(new restify.InvalidArgumentError(JSON.stringify(err.errors)));
 
             if(user){
-                res.send(new restify.InvalidArgumentError('user already exist!'));
+                res.send(new restify.ConflictError('user already exist!'));
             } else {
-                user.save(function(err, new_user){
+                new_user.save(function(err, new_user){
                     if (err) res.send(new restify.InvalidArgumentError(JSON.stringify(err.errors)));
 
                     res.send(new_user);

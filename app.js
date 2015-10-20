@@ -5,6 +5,7 @@ var restify = require('restify'),
     mongoose = require('mongoose'),
     jwt = require('jsonwebtoken'),
     jwtRestify = require('restify-jwt');
+    //paginate = require('restify-paginate');
 var config = require('./config');
 
 var server = restify.createServer({ name: 'gdsc-api' })
@@ -21,7 +22,8 @@ server
     // Maps req.body to req.params
     .use(restify.bodyParser())
 
-    .use(restify.queryParser());
+    .use(restify.queryParser())
+    ;
 
 // CORS
 server.use(function(req, res, next) {
@@ -52,7 +54,7 @@ db.once('open', function (callback) {
 
 var user = require('./modules/user.js');
 var product = require('./modules/product.js');
-
+var reply = require('./modules/Reply.js')
 
 /*======================user=========================*/
 //Authenticate a user
@@ -107,11 +109,28 @@ server.post('/product',function(req,res,next){
 
 //Get all products
 server.get('/product',function(req,res,next){
-
+    if(req.query.page === undefined || req.query.per_page === undefined){
+        req.query.page = 0;
+        req.query.per_page = 20;
+    }
     product.list(req,res);
 });
 
 //Get product by id
 server.get('/product/:id',function(req,res,next){
     product.listOne(req,res,restify);
+});
+
+
+/*======================reply=========================*/
+server.post('/product/:id/replies', function(req,res,next) {
+
+    R.add(req,res,restify);
+
+});
+
+server.get('/product/:id/replies', function(req,res,next) {
+    console.log(req.params.id);
+    R.list(req,res,restify);
+
 });
