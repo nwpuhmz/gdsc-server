@@ -54,7 +54,7 @@ db.once('open', function (callback) {
 
 var user = require('./modules/user.js');
 var product = require('./modules/product.js');
-var reply = require('./modules/Reply.js')
+
 
 /*======================user=========================*/
 //Authenticate a user
@@ -121,16 +121,7 @@ server.get('/product/:id',function(req,res,next){
     product.listOne(req,res,restify);
 });
 
-
-/*======================reply=========================*/
+//Add a comment
 server.post('/product/:id/replies', function(req,res,next) {
-
-    R.add(req,res,restify);
-
-});
-
-server.get('/product/:id/replies', function(req,res,next) {
-    console.log(req.params.id);
-    R.list(req,res,restify);
-
+    product.addComment(req,res,restify);
 });
