@@ -7,6 +7,16 @@ var restify = require('restify'),
     jwtRestify = require('restify-jwt');
     //paginate = require('restify-paginate');
 var config = require('./config');
+var fs = require('fs');
+
+var controllers = {}
+    , controllers_path = process.cwd() + '/controllers'
+
+fs.readdirSync(controllers_path).forEach(function (file) {
+    if (file.indexOf('.js') != -1) {
+        controllers[file.split('.')[0]] = require(controllers_path + '/' + file)
+    }
+});
 
 var server = restify.createServer({ name: 'gdsc-api' })
 
@@ -20,7 +30,11 @@ server
     // Allow the use of POST
     .use(restify.fullResponse())
     // Maps req.body to req.params
-    .use(restify.bodyParser())
+    .use(restify.bodyParser({
+        maxBodySize: 12,
+        uploadDir: __dirname + '/uploads'
+
+    }))
 
     .use(restify.queryParser())
     ;
@@ -125,3 +139,7 @@ server.get('/product/:id',function(req,res,next){
 server.post('/product/:id/replies', function(req,res,next) {
     product.addComment(req,res,restify);
 });
+
+
+/*=========================Image========================*/
+server.post('/upload', controllers.Product.uploadImg);
